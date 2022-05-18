@@ -1,5 +1,5 @@
 const express = require('express');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
 const cors = require('cors');
 const app=express()
@@ -31,6 +31,27 @@ async function run() {
             res.send(result);
         })
       
+        app.put('/complete',async(req,res)=>{
+            const id=req.query.id;
+            const newTask=req.body;
+            const filter={_id:ObjectId(id)};
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    isComplete:newTask.isComplete
+                },
+              };
+            const result = await todoCollection.updateOne(filter, updateDoc, options);
+            res.send(result);
+        })
+
+        app.delete('/taskdelete',async(req,res)=>{
+            const id=req.query.id;
+            const query={_id:ObjectId(id)};
+            const result = await todoCollection.deleteOne(query);
+            console.log(id)
+            res.send(result);
+        })
 
     }
     finally{
