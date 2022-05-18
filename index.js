@@ -20,11 +20,16 @@ async function run() {
         // get all todo services data
         app.get('/todo',async(req,res)=>{
           const query={}
-          const cursor=serviceCollection.find(query)
+          const cursor=todoCollection.find(query)
           const result=await cursor.toArray()
           res.send(result);
         })
 
+        app.post('/addtask',async(req,res)=>{
+            const task=req.body;
+            const result=await todoCollection.insertOne(task);
+            res.send(result);
+        })
       
 
     }
